@@ -21,7 +21,7 @@ import timeit
 import cv2
 import measures
 import EF_utils
-
+import naive.py
 #Read Image works for most formats but NOT RAW
 img = cv2.imread('img_forest.jpg')
 
