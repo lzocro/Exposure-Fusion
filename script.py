@@ -21,7 +21,7 @@ import timeit
 import cv2
 import measures
 import EF_utils
-
+import naive.py
 #Read Image works for most formats but NOT RAW
 img = cv2.imread('img_forest.jpg')
 
@@ -33,6 +33,16 @@ for i in range(len(img)):
 	cv2.imshow('title',img[i]) #'title' is title of the window and the id to refer to it (see namedWindow)
 	cv2.waitKey(0) #pressing any key continues the program ...
 cv2.destroyAllWindows()# ... and closes the window
+
+
+#example
+image = naive_reconstruction(['venice_canal_exp_0.jpg', 'venice_canal_exp_1.jpg', 'venice_canal_exp_2.jpg'], [1,1,3])
+
+cv2.imshow('fused image', image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
 
 #Applying Grayscale filter to image
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
