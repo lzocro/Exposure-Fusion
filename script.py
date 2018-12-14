@@ -34,6 +34,16 @@ for i in range(len(img)):
 	cv2.waitKey(0) #pressing any key continues the program ...
 cv2.destroyAllWindows()# ... and closes the window
 
+
+#example
+image = naive_reconstruction(['venice_canal_exp_0.jpg', 'venice_canal_exp_1.jpg', 'venice_canal_exp_2.jpg'], [1,1,3])
+
+cv2.imshow('fused image', image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
+
 #Applying Grayscale filter to image
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
