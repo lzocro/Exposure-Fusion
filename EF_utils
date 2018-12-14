@@ -1,0 +1,24 @@
+#Function to import a sequence on pictures into an array
+def read_sequence_to_fuse(seq):
+
+	'''
+
+	seq should be a list of file names such as ["img1.jpg","img2.jpg"]
+	The images should have the same dimensions
+
+	'''
+
+	n_images = len(seq)
+	if n_images == 1:
+		warnings.warn('sequence only has one image', Warning)
+
+	height_images = np.size(cv2.imread(seq[0]),0)
+	width_images = np.size(cv2.imread(seq[0]),1)
+	output_object = np.empty(n_images, dtype='object')#np.empty((n_images, height_images, width_images, 3)) #3 is for RGB
+
+	for i in range(len(seq)):
+		output_object[i] = cv2.imread(seq[i])
+
+	shapes = [i.shape for i in output_object]
+	assert shapes[1:] == shapes[:-1], 'All images do not have the same shape' #checks that all images have the same dimensions
+	return(output_object)
