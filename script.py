@@ -42,6 +42,32 @@ cv2.imshow('fused image', image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
+#example 2
+image = improved_naive_reconstruction(['venice_canal_exp_0.jpg', 'venice_canal_exp_1.jpg', 'venice_canal_exp_2.jpg'], [1,1,3])
+
+cv2.imshow('fused image', image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+# example 3 (paper)
+
+test, W, L_R= paper_reconstruction(['venice_canal_exp_0.jpg', 'venice_canal_exp_1.jpg', 'venice_canal_exp_2.jpg'], [1,1,1], 5)
+
+cv2.imshow('fused image', test)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+#plot the weights
+for i in range(3): #n_images
+	cv2.imshow('weights', W[i])
+	cv2.waitKey(0)
+	cv2.destroyAllWindows()
+
+#plot the pyramid
+for i in range(4): #depth - 1
+	cv2.imshow('laplacian', L_R[i])
+	cv2.waitKey(0)
+	cv2.destroyAllWindows()
 
 
 #Applying Grayscale filter to image
