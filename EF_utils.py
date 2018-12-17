@@ -1,3 +1,8 @@
+import cv2
+import numpy as np
+import scipy
+import measures
+
 def read_sequence_to_fuse(seq):
 
 	'''
@@ -12,8 +17,8 @@ def read_sequence_to_fuse(seq):
 	if n_images == 1:
 		warnings.warn('sequence only has one image', Warning)
 
-	height_images = np.size(cv2.imread(seq[0]),0)
-	width_images = np.size(cv2.imread(seq[0]),1)
+	height_images = cv2.imread(seq[0]).shape[0]
+	width_images = cv2.imread(seq[0]).shape[1]
 	output_object = np.empty((n_images, height_images, width_images, 3), dtype=np.uint8)#np.empty((n_images, height_images, width_images, 3)) #3 is for RGB
 
 	for i in range(n_images):
@@ -70,7 +75,7 @@ def paper_reconstruction(locations, w_exponents, depth):
 	'''
 	assert len(w_exponents) == 3, 'Incorrect dimension of w_exponents'
 	image = read_sequence_to_fuse(locations)
-	W = (contrast_measure(image)**w_exponents[0])*(saturation_measure(image)**w_exponents[1])*(exposure_measure(image)**w_exponents[2])
+	W = (measures.contrast_measure(image)**w_exponents[0])*(measures.saturation_measure(image)**w_exponents[1])*(measures.exposure_measure(image)**w_exponents[2])
 	a,b,c = W.shape
 	W_prod = np.empty((a,b,c,3), dtype='float')
 

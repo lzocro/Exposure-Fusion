@@ -1,3 +1,9 @@
+import cv2
+import measures
+import EF_utils
+import numpy as np
+import scipy
+
 def naive_reconstruction(locations, w_exponents):
 	'''
 	Constructions the naive fusion described in section 3.2 give a sequence of images and the exponenets [w_c,w_s,w_e]
@@ -7,8 +13,8 @@ def naive_reconstruction(locations, w_exponents):
 
 	'''
 	assert len(w_exponents) == 3, 'Incorrect dimension of w_exponents'
-	image = read_sequence_to_fuse(locations)
-	W = (contrast_measure(image)**w_exponents[0])*(saturation_measure(image)**w_exponents[1])*(exposure_measure(image)**w_exponents[2])
+	image = EF_utils.read_sequence_to_fuse(locations)
+	W = (measures.contrast_measure(image)**w_exponents[0])*(measures.saturation_measure(image)**w_exponents[1])*(measures.exposure_measure(image)**w_exponents[2])
 	a,b,c = W.shape
 	W_prod = np.empty((a,b,c,3), dtype='float')
 	for i in range(W.shape[0]):
@@ -29,8 +35,8 @@ def improved_naive_reconstruction(locations, w_exponents):
 
 	'''
 	assert len(w_exponents) == 3, 'Incorrect dimension of w_exponents'
-	image = read_sequence_to_fuse(locations)
-	W = (contrast_measure(image)**w_exponents[0])*(saturation_measure(image)**w_exponents[1])*(exposure_measure(image)**w_exponents[2])
+	image = EF_utils.read_sequence_to_fuse(locations)
+	W = (measures.contrast_measure(image)**w_exponents[0])*(measures.saturation_measure(image)**w_exponents[1])*(measures.exposure_measure(image)**w_exponents[2])
 	a,b,c = W.shape
 	W_prod = np.empty((a,b,c,3), dtype='float')
 	for i in range(W.shape[0]):
@@ -38,8 +44,9 @@ def improved_naive_reconstruction(locations, w_exponents):
 		W[i] = np.multiply( 1/(np.sum(W, axis = 0)), W[i]) #wtilda (normalisation)
 	for i in range(W.shape[0]):	
 		W_prod[i] = np.stack((W[i],W[i],W[i]), axis = -1)
-	R = np.uint8(np.sum(np.multiply(W_prod, image), axis = 0))
+	R = np.sum(np.multiply(W_prod, image), axis = 0)
 	avg_im=np.mean(image, axis=0)
-	Completion= avg_im*(R<=10)
-	R+= np.uint8(Completion) #attempt to fill in the holes
+	Completion= avg_im*(np.uint8(R)<=10)
+	R+= Completion #attempt to fill in the holes
+	R=np.uint8(R)
 	return(R)
