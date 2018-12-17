@@ -1,3 +1,6 @@
+import cv2
+import numpy as np
+import scipy
 
 def contrast_measure(image, kernel_size = 3, gaussian = False):
 	'''

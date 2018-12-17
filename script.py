@@ -21,12 +21,12 @@ import timeit
 import cv2
 import measures
 import EF_utils
-import naive.py
+import naive
 #Read Image works for most formats but NOT RAW
 img = cv2.imread('img_forest.jpg')
 
 #example 
-img= read_sequence_to_fuse(['img_forest.jpg','img_forest.jpg'])
+img = EF_utils.read_sequence_to_fuse(['img_forest.jpg','img_forest.jpg'])
 
 cv2.namedWindow('title', cv2.WINDOW_NORMAL) #creates a resizeable frame for large pictures, can be skipped
 for i in range(len(img)):
@@ -36,14 +36,14 @@ cv2.destroyAllWindows()# ... and closes the window
 
 
 #example
-image = naive_reconstruction(['venice_canal_exp_0.jpg', 'venice_canal_exp_1.jpg', 'venice_canal_exp_2.jpg'], [1,1,3])
+image = naive.naive_reconstruction(['venice_canal_exp_0.jpg', 'venice_canal_exp_1.jpg', 'venice_canal_exp_2.jpg'], [1,1,3])
 
 cv2.imshow('fused image', image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
 #example 2
-image = improved_naive_reconstruction(['venice_canal_exp_0.jpg', 'venice_canal_exp_1.jpg', 'venice_canal_exp_2.jpg'], [1,1,3])
+image = naive.improved_naive_reconstruction(['venice_canal_exp_0.jpg', 'venice_canal_exp_1.jpg', 'venice_canal_exp_2.jpg'], [1,1,3])
 
 cv2.imshow('fused image', image)
 cv2.waitKey(0)
@@ -51,7 +51,7 @@ cv2.destroyAllWindows()
 
 # example 3 (paper)
 
-test, W, L_R= paper_reconstruction(['venice_canal_exp_0.jpg', 'venice_canal_exp_1.jpg', 'venice_canal_exp_2.jpg'], [1,1,1], 5)
+test, W, L_R= EF_utils.paper_reconstruction(['venice_canal_exp_0.jpg', 'venice_canal_exp_1.jpg', 'venice_canal_exp_2.jpg'], [1,1,1], 5)
 
 cv2.imshow('fused image', test)
 cv2.waitKey(0)
@@ -69,9 +69,6 @@ for i in range(4): #depth - 1
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
 
-
-#Applying Grayscale filter to image
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 #Saving filtered image to new file
 #cv2.imwrite('graytest.jpg',gray)
