@@ -36,9 +36,18 @@ for i in range(len(img)):
     cv2.waitKey(0) #pressing any key continues the program ...
 cv2.destroyAllWindows()# ... and closes the window
 
+#example 0
+image, W = naive.naive_reconstruction(['house_A.jpg', 'house_B.jpg', 'house_C.jpg', 'house_D.jpg'], [1,1,1])
 
-#example
-image, W = naive.naive_reconstruction(['venice_canal_exp_0.jpg', 'venice_canal_exp_1.jpg', 'venice_canal_exp_2.jpg'], [1,1,3])
+#cv2.namedWindow('fused image',cv2.WINDOW_NORMAL)
+#image = cv2.resize(image, (600, 600))
+cv2.imshow('fused image', image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
+#example 1
+image, W = naive.naive_reconstruction(['venice_canal_exp_0.jpg', 'venice_canal_exp_1.jpg', 'venice_canal_exp_2.jpg'], [1,1,1])
 
 cv2.namedWindow('fused image',cv2.WINDOW_NORMAL)
 image = cv2.resize(image, (600, 600))
@@ -54,8 +63,7 @@ cv2.waitKey(0)
 cv2.destroyAllWindows()
 
 # example 3 (paper)
-
-test, W, L_R= EF_utils.paper_reconstruction(['venice_canal_exp_0.jpg', 'venice_canal_exp_1.jpg', 'venice_canal_exp_2.jpg'], [1,1,1], 5)
+test = naive.paper_reconstruction(['venice_canal_exp_0.jpg', 'venice_canal_exp_1.jpg', 'venice_canal_exp_2.jpg'], [1,1,1], 5)
 
 cv2.imshow('fused image', test)
 cv2.waitKey(0)
