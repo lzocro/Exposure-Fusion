@@ -56,6 +56,25 @@ cv2.waitKey(0)
 cv2.destroyAllWindows()
 
 
+#example 1
+image, W = naive.naive_reconstruction(['venice_mask_0.jpg', 'venice_mask_1.jpg', 'venice_mask_2.jpg'], [1.,1.,1.])
+image = np.uint8(np.clip(image*255,0,255))
+#cv2.namedWindow('fused image',cv2.WINDOW_NORMAL)
+#image = cv2.resize(image, (600, 600))
+cv2.imshow('fused image', image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
+image = naive.paper_reconstruction(['venice_mask_0.jpg', 'venice_mask_1.jpg', 'venice_mask_2.jpg'], [1.,1.,1.])
+image = np.uint8(np.clip(image*255,0,255))
+#cv2.namedWindow('fused image',cv2.WINDOW_NORMAL)
+#image = cv2.resize(image, (600, 600))
+cv2.imshow('fused image', image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
 # example 2 (paper)
 image = naive.paper_reconstruction(['venice_canal_exp_0.jpg', 'venice_canal_exp_1.jpg', 'venice_canal_exp_2.jpg'], [1,1,1], 5)
 image = np.uint8(np.clip(image*255,0,255))
@@ -64,4 +83,15 @@ image = cv2.resize(image, (600, 600))
 cv2.imshow('paper image', image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+
+# example 2 (paper)
+image = naive.paper_reconstruction(['ballon_0{}.png'.format(nb) for nb in np.arange(163,172)], [1,1,1],5)
+image = np.uint8(np.clip(image*255,0,255))
+#cv2.namedWindow('paper image',cv2.WINDOW_NORMAL)
+#image = cv2.resize(image, (600, 600))
+cv2.imshow('paper image', image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
 

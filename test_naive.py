@@ -14,7 +14,7 @@ import cv2
 
 locations = ['venice_canal_exp_0.jpg', 'venice_canal_exp_1.jpg', 'venice_canal_exp_2.jpg']
 w_exponents = [1,1,1]
-depth = 8
+depth = 4
 Max_range=255.
 
 image = EF.read_sequence_to_fuse(locations)
@@ -23,17 +23,18 @@ W_norm = m.weight_calc(image, w_exponents)
 list_Gaus_pyr_w = []
 for w in W_norm :
     print(w.shape)
-    list_Gaus_pyr_w.append(list(reversed((Gaussian_pyramid(w, depth)))))
+    l, max_depth = Gaussian_pyramid(w)
+    list_Gaus_pyr_w.append(list(reversed((l))))
 list_Gaus_pyr_w = [np.stack(i,axis=0) for i in zip(*list_Gaus_pyr_w)]
 norm_img = image/Max_range
 list_Lapl_pyr = []
 for im in norm_img :
-    list_Lapl_pyr.append(Laplacian_pyramid(im, depth))
+    list_Lapl_pyr.append(Laplacian_pyramid(im))
 
 lapl_pyr = [np.stack(i,axis=0) for i in zip(*list_Lapl_pyr)]
 
 l_lapl_fuse = []
-for l in range(depth):
+for l in range(max_depth):
     l_lapl_fuse.append(np.einsum('lij,lijc->ijc',list_Gaus_pyr_w[l],lapl_pyr[l]))
     
 hdr_im_norm =  Collapse_Laplacian(l_lapl_fuse)

@@ -5,7 +5,7 @@ import numpy as np
 import cv2
 
 
-def naive_reconstruction(locations, w_exponents, Max_range=255.):
+def naive_reconstruction(locations, w_exponents, Max_range=255., offset=1):
     '''
     Constructions the naive fusion described in section 3.2 give a sequence of images and the exponenets [w_c,w_s,w_e]
     returns a single fused image
@@ -16,7 +16,7 @@ def naive_reconstruction(locations, w_exponents, Max_range=255.):
     assert len(w_exponents) == 3, 'Incorrect dimension of w_exponents'
     image = EF.read_sequence_to_fuse(locations)
     image_norm = np.float32(image/Max_range)
-    W_norm = weight_calc(image, w_exponents)
+    W_norm = weight_calc(image, w_exponents, offset=offset)
     W_norm = np.stack(3*[W_norm], axis=-1)
     R = np.zeros(image[0].shape, dtype=np.float32)
     for i in range(len(image)) :
@@ -27,31 +27,8 @@ def naive_reconstruction(locations, w_exponents, Max_range=255.):
 #    R = np.uint8(np.sum(np.multiply(W_prod, image), axis = 0))
     return R, W_norm
 
-
-# une fonction qui reprends la 1ere formule de 3.2 mais avec quelque améliorations, comme un filtre gaussien sur les poids pour lisser leur effets
-def improved_naive_reconstruction(locations, w_exponents):
-	'''
-	Constructions the naive fusion described in section 3.2 give a sequence of images and the exponenets [w_c,w_s,w_e]
-	returns a single fused image
-	We have a problem when all the weights for all three pictures become 0. What to do? average all three pictures, keep only missing pixels and add to the picture? 
-	'''
-	assert len(w_exponents) == 3, 'Incorrect dimension of w_exponents'
-	image = EF.read_sequence_to_fuse(locations)
-	W = (m.contrast_measure(image)**w_exponents[0])*(m.saturation_measure(image)**w_exponents[1])*(m.exposure_measure(image)**w_exponents[2])
-	for i in range(W.shape[0]):
-		W[i] = cv2.GaussianBlur(W[i], (3,3), 0) #applying a gaussian filter over the weight map
-		W[i] = np.multiply( 1/(np.sum(W, axis = 0)), W[i]) #wtilda (normalisation)
-	for i in range(W.shape[0]):	
-		W_prod[i] = np.stack((W[i],W[i],W[i]), axis = -1)
-	R = np.sum(np.multiply(W_prod, image), axis = 0)
-	avg_im=np.mean(image, axis=0)
-	Completion= avg_im*(np.uint8(R)<=10)
-	R+= Completion #attempt to fill in the holes
-	R=np.uint8(R)
-	return(R)
     
-    
-def paper_reconstruction(locations, w_exponents, depth=None, Max_range = 255.):
+def paper_reconstruction(locations, w_exponents, depth=None, Max_range = 255., offset=0):
     """
     Fusion method based on the paper from Mertens & Al
     """
@@ -62,7 +39,7 @@ def paper_reconstruction(locations, w_exponents, depth=None, Max_range = 255.):
     nb_image = len(locations)
     
     # computes weights
-    W_norm = weight_calc(image, w_exponents)
+    W_norm = weight_calc(image, w_exponents, offset=offset)
     W_norm = np.expand_dims(W_norm, axis=3)
     
     # compute Gaussian pyramid of weights for each image

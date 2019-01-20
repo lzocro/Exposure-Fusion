@@ -15,9 +15,7 @@ def contrast_measure(image, Max_range = 255., kernel_size = 3, gaussian = False)
         if gaussian == True:
             image[i] = cv2.GaussianBlur(image[i], (kernel_size,kernel_size), 0);#Apply gaussian blur if wanted (might be recomended to denoise the image)
         im_gs = cv2.cvtColor(image[i], cv2.COLOR_BGR2GRAY)
-        print('nb zero before is {}'.format(np.count_nonzero(im_gs==0)))
         L_im[i] = np.absolute(cv2.Laplacian(im_gs, cv2.CV_32F))
-        print('nb zero is {}'.format(np.count_nonzero(L_im[i]==0)))
     print('contrast : max is {}, min is {}'.format(np.max(L_im), np.min(L_im)))   
     return L_im
 
@@ -51,7 +49,7 @@ def exposure_measure(image, sigma = 0.2):
     return np.prod(M,axis=3)
 
 
-def weight_calc(images, w_exponents, Max_range=255.):
+def weight_calc(images, w_exponents, Max_range=255., offset=1):
     '''
     Calculates weight map for each images
     images is a np.array of dims k=nb of images, i,j=image shapes, l=3 (for each RGB color)
@@ -62,7 +60,8 @@ def weight_calc(images, w_exponents, Max_range=255.):
 #    if (w_exponents.any()<0) | (w_exponents.any()>1):
 #        warnings.warn('some exponents are not between 0 and 1', Warning)
     images_norm = np.float32(images)/Max_range
-    W = (contrast_measure(images_norm)**w_exponents[0]+1)*(saturation_measure(images_norm)**w_exponents[1]+1)*(exposure_measure(images_norm)**w_exponents[2]+1)
+    W = (contrast_measure(images_norm)**w_exponents[0]+offset)*(saturation_measure(images_norm)**w_exponents[1]+offset)*(exposure_measure(images_norm)**w_exponents[2]+offset)
     W += 1e-12 # to avoid dividing by zero
     W_normalized = np.einsum('ij,lij->lij',1./(W.sum(axis=0)),W)
     return np.float32(W_normalized)
+
